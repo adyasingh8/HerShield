@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HerShield | Login</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="auth-page">
+
+<div class="auth-shell">
+
+    <div class="auth-welcome">
+        <div class="brand">HerShield</div>
+
+        <div class="welcome-content">
+            <h1>Welcome<br>Back!</h1>
+            <p>
+                Your safety journey continues here.
+                Log in to access your personal safety dashboard.
+            </p>
+        </div>
+
+        <div class="welcome-footer">
+            Stay aware. Stay prepared. Stay safe.
+        </div>
+    </div>
+
+    <div class="auth-form-area">
+        <div class="auth-card login-card">
+
+            <h2>Welcome Back</h2>
+            <p class="auth-subtitle">
+                Login to your HerShield account
+            </p>
+
+            {% with messages = get_flashed_messages() %}
+                {% for message in messages %}
+                    <div class="auth-message">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+
+            <form action="{{ url_for('login') }}" method="POST">
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email"
+                           placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password"
+                           placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="auth-button">
+                    Login to HerShield
+                </button>
+
+            </form>
+
+            <p class="auth-switch">
+                Don't have an account?
+                <a href="{{ url_for('register') }}">Create Account</a>
+            </p>
+
+            <a class="back-home" href="{{ url_for('home') }}">
+                ← Back to Home
+            </a>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

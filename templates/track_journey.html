@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>HerShield - Journey Tracking</title>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f3fc;
+            padding: 25px;
+            color: #34254b;
+        }
+
+        .tracking-card {
+            max-width: 850px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+        }
+
+        #trackingMap {
+            height: 450px;
+            width: 100%;
+            border-radius: 12px;
+        }
+
+        #trackingMessage {
+            margin: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="tracking-card">
+
+        <h1>HerShield - Live Journey Tracking</h1>
+
+        <p>View the latest shared journey location.</p>
+
+        <p id="trackingMessage">
+            Connecting to live location...
+        </p>
+
+        <div id="trackingMap"></div>
+
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        const token = {{ token | tojson }};
+
+        const trackingMap = L.map("trackingMap").setView(
+            [25.5941, 85.1376], 13
+        );
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                attribution: "&copy; OpenStreetMap contributors"
+            }
+        ).addTo(trackingMap);
+
+        let trackingMarker = null;
+
+        async function updateSharedLocation() {
+
+            try {
+
+                const response = await fetch(
+                    "/api/journeys/track/" + encodeURIComponent(token)
+                );
+
+                const result = await response.json();
+
+                if (!response.ok) {
+
+                    document.getElementById("trackingMessage")
+                        .textContent = result.message;
+
+                    if (response.status === 404 &&
+                        result.message === "Journey has ended.") {
+                        clearInterval(locationTimer);
+                    }
+
+                    return;
+                }
+
+                const latitude = result.latitude;
+                const longitude = result.longitude;
+
+                if (trackingMarker) {
+
+                    trackingMarker.setLatLng([
+                        latitude,
+                        longitude
+                    ]);
+
+                } else {
+
+                    trackingMarker = L.marker([
+                        latitude,
+                        longitude
+                    ]).addTo(trackingMap);
+
+                }
+
+                trackingMap.setView(
+                    [latitude, longitude],
+                    16
+                );
+
+                document.getElementById("trackingMessage")
+                    .textContent =
+                    "Live location updated successfully.";
+
+            } catch (error) {
+
+                console.error(error);
+
+                document.getElementById("trackingMessage")
+                    .textContent =
+                    "Unable to retrieve the shared location.";
+
+            }
+        }
+
+        updateSharedLocation();
+
+        const locationTimer = setInterval(
+            updateSharedLocation,
+            5000
+        );
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,760 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>HerShield | Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>      
+</head>
+
+<body class="dashboard-page">
+
+    <!-- Navigation Bar -->
+    <nav class="dashboard-navbar">
+
+        <div class="dashboard-brand">
+            Her<span>Shield</span>
+        </div>
+
+        <div class="dashboard-nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="#safety">Safety</a>
+            <a href="#contacts">Emergency Contacts</a>
+            <a href="#journey">Safe Journey</a>
+            <a href="{{ url_for('sos_history') }}">
+              SOS History
+            </a>
+        </div>
+
+        <a href="{{ url_for('home') }}" class="logout-button">
+            Logout
+        </a>
+
+    </nav>
+
+
+    <!-- Main Dashboard -->
+    <main class="dashboard-container">
+
+        <!-- Welcome Section -->
+        <section class="dashboard-welcome">
+
+            <div>
+                <p class="welcome-tag">YOUR PERSONAL SAFETY SPACE</p>
+
+                <h1>Welcome to HerShield! 💜</h1>
+
+                <p>
+                    Your safety matters. Stay prepared, stay confident
+                    and take control of your safety journey.
+                </p>
+            </div>
+
+            <div class="welcome-icon">🛡️</div>
+
+        </section>
+
+
+        <!-- SOS Emergency Section -->
+        <section class="sos-section" id="safety">
+
+            <div class="sos-content">
+                <span class="sos-label">EMERGENCY ASSISTANCE</span>
+
+                <h2>Need Immediate Help?</h2>
+
+                <p>
+                    Use the emergency SOS feature to start an alert
+                    when you need assistance.
+                </p>
+            </div>
+
+           
+            <div class="sos-action">
+
+              <button class="sos-button" id="sosButton" type="button">
+                 SOS
+              </button>
+
+              <p id="sosMessage" role="status">
+                  Press SOS only when you need emergency assistance.
+              </p>
+
+               <button
+                 class="stop-sos-button"
+                 id="stopSOSButton"
+                 type="button"
+                 hidden>
+                 I'm Safe - Stop SOS
+              </button>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- Quick Access Cards -->
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+                <h2>Your Safety Tools</h2>
+                <p>Everything you need in one place.</p>
+            </div>
+
+            <div class="dashboard-grid">
+
+                <div class="dashboard-card" id="contacts">
+                    <a href="{{ url_for('contacts') }}" class="feature-card">
+                        <div class="feature-icon">👥</div>
+
+                     <h3>Emergency Contacts</h3>
+
+                        <p>
+                        Keep your trusted people ready for emergencies.
+                        </p>
+
+                       <span>SET UP NEXT →</span>
+
+                        </a>
+                       </div> 
+
+                 
+                <div class="dashboard-card" id="liveLocationCard">
+
+                 <div class="card-icon">📍</div>
+
+                   <h3>Live Location</h3>
+
+                     <p>
+                       Share your current location with trusted contacts.
+                     </p>
+
+                     <p id="locationStatus">
+                       Waiting for location...
+                     </p>
+
+                 <div id="liveCoordinates" style="display: none;">
+
+                     <p>
+                      <strong>Latitude:</strong>
+                      <span id="liveLatitude">--</span>
+                     </p>
+
+                     <p>
+                       <strong>Longitude:</strong>
+                       <span id="liveLongitude">--</span>
+                     </p>
+
+                     <a id="googleMapsLink"
+                        href="#"
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        View on Google Maps
+                     </a>
+
+                 </div>
+
+                  <span class="feature-status" id="trackingStatus">
+                      Waiting to start
+                  </span>
+
+                </div>
+
+                <a href="{{ url_for('safe_journey') }}"
+                   class="dashboard-card"
+                   id="journey"
+                   style="display:block; text-decoration:none; color:inherit; cursor:pointer;">
+
+                    <div class="card-icon">🚶‍♀️</div>
+
+                    <h3>Safe Journey</h3>
+
+                    <p>
+                       Plan your journey and stay connected during travel.
+                    </p>
+
+                   <span class="feature-status">Start Journey</span>
+
+                </a>
+
+                <a href="{{ url_for('sos_history') }}"
+                  class="dashboard-card"
+                  style="display: block; text-decoration: none; color: inherit; cursor: pointer;">
+
+                 <div class="card-icon">📋</div>
+
+                 <h3>SOS History</h3>
+
+                 <p>
+                     View your previous emergency alerts and activities.
+                 </p>
+
+                 <span class="feature-status">View History</span>
+
+                </a>
+
+                <section class="location-section">
+
+                    <h2>Your Current Location</h2>
+
+                    <p id="locationText">
+                        Your location will appear here after you use SOS.
+                    </p>
+
+                    <div id="map"></div>
+
+                </section>
+
+            </div>
+
+        </section>
+
+
+        <!-- Safety Tips -->
+        <section class="tips-section">
+
+            <div>
+                <span class="tips-label">A LITTLE SAFETY REMINDER</span>
+
+                <h2>Stay Alert. Stay Confident.</h2>
+
+                <p>
+                    Keep your phone charged, save trusted emergency
+                    contacts and be aware of your surroundings.
+                </p>
+            </div>
+
+            <div class="tips-icon">🌸</div>
+
+        </section>
+
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            <h3>HerShield</h3>
+            <p>Your safety. Your strength. Your shield.</p>
+            <span>© 2026 HerShield. All rights reserved.</span>
+        </footer>
+
+    </main>
+
+    <script>
+
+     const sosButton = document.getElementById("sosButton");
+     const sosMessage = document.getElementById("sosMessage");
+     const locationText = document.getElementById("locationText");
+     const stopSOSButton = document.getElementById("stopSOSButton");
+
+     let map;
+     let marker;
+
+     let liveTrackingId = null;
+     let activeAlertId = null;
+
+     sosButton.addEventListener("click", function () {
+
+        const confirmed = confirm(
+            "Do you want to trigger an SOS alert and record your current location?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        if (!navigator.geolocation) {
+            sosMessage.textContent =
+                "Your browser does not support location access.";
+             return;
+        }
+
+        sosButton.disabled = true;
+        sosMessage.textContent = "Getting your current location...";
+
+        navigator.geolocation.getCurrentPosition(
+            sendSOS,
+            handleLocationError,
+            {
+               enableHighAccuracy: true,
+               timeout: 15000,
+               maximumAge: 0
+            }
+        );
+    });
+
+     
+
+async function sendSOS(position) {
+
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    locationText.textContent =
+        "Latitude: " + latitude +
+        " | Longitude: " + longitude;
+
+    sosMessage.textContent = "Sending SOS alert...";
+
+    try {
+
+        const response = await fetch("/api/sos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                latitude: latitude,
+                longitude: longitude
+            })
+        });
+
+        const responseText = await response.text();
+
+        let result;
+
+        try {
+            result = JSON.parse(responseText);
+        } catch {
+            sosMessage.textContent =
+                "Server error. HTTP Status: " +
+                response.status +
+                ". Response: " +
+                responseText.substring(0, 250);
+
+            return;
+        }
+
+        if (!response.ok) {
+            sosMessage.textContent =
+                "Error " + response.status +
+                ": " + result.message;
+            return;
+        }
+         
+        console.log("SOS HTTP Status:", response.status);
+        console.log("SOS API Response:", result); 
+
+        sosMessage.textContent = result.message;
+
+        showMap(latitude, longitude);
+
+        // Start live GPS tracking
+        if (result.alert_id) {
+            activeAlertId = result.alert_id;
+
+            startLiveTracking(result.alert_id);
+
+              stopSOSButton.hidden = false;
+
+            sosMessage.textContent =
+                "SOS activated! Live location tracking started.";
+            } else {
+            sosMessage.textContent =
+                "SOS recorded, but alert ID was not returned.";
+         }
+
+    } catch (error) {
+
+        sosMessage.textContent =
+            "Connection error: " + error.message;
+
+    } finally {
+
+        sosButton.disabled = false;
+
+    }
+}
+
+
+
+stopSOSButton.addEventListener("click", async function () {
+
+    if (!activeAlertId) {
+        alert("No active SOS alert found.");
+        return;
+    }
+
+    const confirmed = confirm(
+        "Are you safe? Do you want to stop the SOS alert and live tracking?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    stopSOSButton.disabled = true;
+    stopSOSButton.textContent = "Stopping...";
+
+    try {
+
+        const response = await fetch("/api/stop-sos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                alert_id: activeAlertId
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.message || "Unable to stop SOS.");
+        }
+
+        // Stop browser GPS tracking
+        if (liveTrackingId !== null) {
+            navigator.geolocation.clearWatch(liveTrackingId);
+            liveTrackingId = null;
+        }
+
+        activeAlertId = null;
+
+        // Update dashboard
+        sosMessage.textContent =
+            "SOS resolved. Live location tracking stopped.";
+
+        stopSOSButton.hidden = true;
+        stopSOSButton.disabled = false;
+        stopSOSButton.textContent = "I'm Safe - Stop SOS";
+
+        sosButton.disabled = false;
+
+        const trackingStatus =
+            document.getElementById("trackingStatus");
+
+        if (trackingStatus) {
+            trackingStatus.textContent = "SOS Resolved";
+            trackingStatus.style.backgroundColor = "#eee5fa";
+            trackingStatus.style.color = "#8052a6";
+        }
+
+        const locationStatus =
+            document.getElementById("locationStatus");
+
+        if (locationStatus) {
+            locationStatus.textContent =
+                "SOS resolved. Last location saved.";
+        }
+
+        alert("Your SOS alert has been resolved successfully.");
+
+    } catch (error) {
+
+        console.error("Stop SOS error:", error);
+
+        sosMessage.textContent = error.message;
+
+        stopSOSButton.disabled = false;
+        stopSOSButton.textContent = "I'm Safe - Stop SOS";
+    }
+});
+
+
+
+
+ function handleLocationError(error) {
+
+    const messages = {
+        1: "Location permission was denied. Please allow location access.",
+        2: "Your current location could not be determined.",
+        3: "Location request timed out. Please try again."
+    };
+
+    sosMessage.textContent =
+        messages[error.code] || "Unable to get your location.";
+
+    sosButton.disabled = false;
+}
+
+
+
+function showMap(latitude, longitude) {
+
+    // Update the displayed coordinates
+    const latitudeText = document.getElementById("liveLatitude");
+    const longitudeText = document.getElementById("liveLongitude");
+    const coordinates = document.getElementById("liveCoordinates");
+    const mapsLink = document.getElementById("googleMapsLink");
+
+    if (latitudeText && longitudeText) {
+        latitudeText.textContent = Number(latitude).toFixed(7);
+        longitudeText.textContent = Number(longitude).toFixed(7);
+    }
+
+    if (coordinates) {
+        coordinates.style.display = "block";
+    }
+
+    if (mapsLink) {
+        mapsLink.href =
+            `https://www.google.com/maps?q=${latitude},${longitude}`;
+    }
+
+    // Initialize or update map
+    if (!map) {
+
+        map = L.map("map").setView(
+            [latitude, longitude], 16
+        );
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                attribution: "&copy; OpenStreetMap contributors"
+            }
+        ).addTo(map);
+
+    } else {
+
+        map.setView([latitude, longitude], 16, {
+            animate: true
+        });
+
+    }
+
+    // Update existing marker
+    if (marker) {
+        marker.setLatLng([latitude, longitude]);
+    } else {
+        marker = L.marker([latitude, longitude]).addTo(map);
+    }
+
+    marker.bindPopup("Current SOS Location").openPopup();
+
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 100);
+}
+
+
+
+
+// Load the latest saved SOS location from MySQL
+
+
+async function loadLatestLocation() {
+
+    const status = document.getElementById("locationStatus");
+
+    if (!status) {
+        console.error("locationStatus element not found in dashboard.html");
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/api/latest-sos");
+
+        const result = await response.json();
+
+        if (!response.ok) {
+
+            status.textContent = result.message ||
+                "No previous SOS location found.";
+
+            return;
+        }
+
+        status.textContent =
+            "Latest SOS location loaded successfully.";
+
+            updateLiveLocationCard(
+              result.latitude,
+              result.longitude,
+              false
+            );
+
+        showMap(
+            result.latitude,
+            result.longitude
+        );
+
+    } catch (error) {
+
+        console.error("Location loading error:", error);
+
+        status.textContent =
+            "Unable to load the saved location. Please refresh.";
+
+    }
+}
+
+loadLatestLocation();
+
+
+
+function updateLiveLocationCard(latitude, longitude, isLive) {
+
+    const status = document.getElementById("locationStatus");
+    const coordinates = document.getElementById("liveCoordinates");
+    const latitudeText = document.getElementById("liveLatitude");
+    const longitudeText = document.getElementById("liveLongitude");
+    const mapsLink = document.getElementById("googleMapsLink");
+    const trackingStatus = document.getElementById("trackingStatus");
+
+    if (!status || !coordinates || !trackingStatus) {
+        console.error("Live Location card elements not found.");
+        return;
+    }
+
+    latitudeText.textContent = Number(latitude).toFixed(7);
+    longitudeText.textContent = Number(longitude).toFixed(7);
+
+    coordinates.style.display = "block";
+
+    mapsLink.href =
+        `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+    if (isLive) {
+        status.textContent = "Your location is being shared.";
+        trackingStatus.textContent = "Live Tracking Active";
+        trackingStatus.style.backgroundColor = "#d8f5df";
+        trackingStatus.style.color = "#237a3b";
+    } else {
+        status.textContent = "Latest saved location loaded.";
+        trackingStatus.textContent = "Last Location Saved";
+        trackingStatus.style.backgroundColor = "#eee5fa";
+        trackingStatus.style.color = "#8052a6";
+    }
+}
+
+
+
+function startLiveTracking(alertId) {
+
+    if (!navigator.geolocation) {
+        alert("GPS location is not supported by this browser.");
+        return;
+    }
+
+    if (liveTrackingId !== null) {
+        navigator.geolocation.clearWatch(liveTrackingId);
+    }
+
+    activeAlertId = alertId;
+
+    liveTrackingId = navigator.geolocation.watchPosition(
+
+        async function(position) {
+
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            showMap(latitude, longitude);
+            updateLiveLocationCard(latitude, longitude, true);
+
+            console.log("Live location:", latitude, longitude);
+            console.log("Active Alert ID:", activeAlertId);
+
+            try {
+                const response = await fetch("/api/live-location", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        alert_id: activeAlertId,
+                        latitude: latitude,
+                        longitude: longitude
+                    })
+                });
+
+                const result = await response.json();
+
+                console.log("Live API status:", response.status);
+                console.log("Live API response:", result);
+
+
+                console.log(result.message);
+
+            } catch (error) {
+                console.error("Live location update failed:", error);
+            }
+        },
+
+        function(error) {
+
+    console.error("GPS Error Code:", error.code);
+    console.error("GPS Error Message:", error.message);
+
+    let message = "";
+
+    if (error.code === 1) {
+        message = "Location permission denied.";
+    }
+    else if (error.code === 2) {
+        message = "Device location is unavailable.";
+    }
+    else if (error.code === 3) {
+        message = "Location request timed out.";
+    }
+    else {
+        message = "Unknown location error.";
+    }
+
+    sosMessage.textContent = message;
+},
+
+        {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 30000
+        }
+    );
+
+    console.log("Live tracking started.");
+}
+
+
+
+</script>
+
+
+<!-- Interactive GPS Location Section -->
+
+<section class="location-section">
+
+    <div class="location-heading">
+        <div>
+            <span class="location-tag">YOUR LOCATION</span>
+            <h2>Emergency Location Map</h2>
+            <p>
+                View the location recorded during your
+                most recent SOS alert.
+            </p>
+        </div>
+
+        <span class="location-icon">📍</span>
+    </div>
+
+    <div id="locationStatus">
+        Loading your latest SOS location...
+    </div>
+
+    <div id="map"></div>
+
+    <div class="map-footer">
+        <span>📍</span>
+        Your latest recorded emergency location
+    </div>
+
+</section>
+
+
+
+
+</body>
+</html>

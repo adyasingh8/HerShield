@@ -1,0 +1,240 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Contact | HerShield</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f8f3fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+        }
+
+        .edit-card {
+            width: 100%;
+            max-width: 520px;
+            background: white;
+            padding: 38px;
+            border-radius: 22px;
+            box-shadow: 0 12px 35px rgba(70, 40, 90, 0.08);
+            border: 1px solid #f0e8f5;
+        }
+
+        .edit-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 17px;
+            background: #f2e8f8;
+            font-size: 27px;
+            margin-bottom: 20px;
+        }
+
+        .edit-card h1 {
+            color: #38274d;
+            font-size: 27px;
+            margin-bottom: 9px;
+        }
+
+        .subtitle {
+            color: #94869e;
+            font-size: 13px;
+            margin-bottom: 28px;
+            line-height: 1.7;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #59486b;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e8ddec;
+            border-radius: 11px;
+            outline: none;
+            background: #fdfbfe;
+            font-size: 13px;
+            color: #493957;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #a77bc0;
+            box-shadow: 0 0 0 3px rgba(167, 123, 192, 0.12);
+        }
+
+        .update-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #b27fca, #8c61aa);
+            color: white;
+            border: none;
+            border-radius: 11px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .update-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 18px rgba(140, 97, 170, 0.25);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #8b66a5;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            color: #68477d;
+        }
+
+        .flash-message {
+            background: #f0eafa;
+            color: #704b8c;
+            padding: 12px;
+            border-radius: 9px;
+            margin-bottom: 18px;
+            font-size: 12px;
+        }
+
+        @media(max-width: 500px) {
+            .edit-card {
+                padding: 25px;
+            }
+
+            .edit-card h1 {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="edit-card">
+
+        <div class="edit-icon">✏️</div>
+
+        <h1>Edit Emergency Contact</h1>
+
+        <p class="subtitle">
+            Update the details of your trusted emergency contact.
+            Keep their information accurate and up to date.
+        </p>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <div class="flash-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST">
+
+            <div class="form-group">
+
+                <label>Full Name</label>
+
+                <input type="text"
+                       name="name"
+                       value="{{ contact.name }}"
+                       maxlength="100"
+                       required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Phone Number</label>
+
+                <input type="tel"
+                       name="phone"
+                       value="{{ contact.phone }}"
+                       maxlength="15"
+                       required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Relationship</label>
+
+                <select name="relationship" required>
+
+                    {% for relation in [
+                        "Family",
+                        "Friend",
+                        "Parent",
+                        "Sibling",
+                        "Spouse",
+                        "Other"
+                    ] %}
+
+                        <option value="{{ relation }}"
+                            {% if contact.relationship == relation %}
+                                selected
+                            {% endif %}>
+                            {{ relation }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <button type="submit" class="update-button">
+                Save Changes
+            </button>
+
+        </form>
+
+        <a href="{{ url_for('contacts') }}" class="back-link">
+            ← Back to Emergency Contacts
+        </a>
+
+    </div>
+
+</body>
+</html>

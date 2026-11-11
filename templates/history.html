@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HerShield - SOS History</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .history-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 25px;
+        }
+
+        .history-title {
+            color: #302344;
+            margin-bottom: 10px;
+        }
+
+        .history-subtitle {
+            color: #81758e;
+            margin-bottom: 25px;
+        }
+
+        .history-card {
+            background: white;
+            padding: 22px;
+            margin-bottom: 18px;
+            border-radius: 16px;
+            border: 1px solid #eee5f5;
+            box-shadow: 0 5px 18px rgba(80, 50, 100, 0.06);
+        }
+
+        .history-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .history-card h3 {
+            color: #352447;
+            margin: 0;
+        }
+
+        .history-details {
+            color: #746b80;
+            line-height: 1.9;
+            margin-top: 15px;
+        }
+
+        .history-status {
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #fde8ed;
+            color: #bd4968;
+        }
+
+        .status-resolved {
+            background: #e4f4e8;
+            color: #39865a;
+        }
+
+        .history-map {
+            display: inline-block;
+            margin-top: 12px;
+            color: #8052a6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .history-map:hover {
+            color: #633b8a;
+        }
+
+        .empty-history {
+            background: white;
+            padding: 35px;
+            text-align: center;
+            border-radius: 16px;
+            color: #81758e;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #8052a6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="history-container">
+
+        <a href="{{ url_for('dashboard') }}" class="back-link">
+            ← Back to Dashboard
+        </a>
+
+        <h1 class="history-title">SOS Alert History</h1>
+
+        <p class="history-subtitle">
+            View your previous emergency alerts and their locations.
+        </p>
+
+        {% if alerts %}
+
+            {% for alert in alerts %}
+
+                <div class="history-card">
+
+                    <div class="history-card-header">
+
+                        <h3>SOS Alert #{{ alert.alert_id }}</h3>
+
+                        <span class="history-status
+                            {% if alert.status == 'Active' %}
+                                status-active
+                            {% else %}
+                                status-resolved
+                            {% endif %}">
+
+                            {{ alert.status }}
+
+                        </span>
+
+                    </div>
+
+                    <div class="history-details">
+
+                        <div>
+                            <strong>Date:</strong>
+                            {{ alert.created_at.strftime('%d %B %Y') if alert.created_at else 'Not available' }}
+                        </div>
+
+                        <div>
+                            <strong>Time:</strong>
+                            {{ alert.created_at.strftime('%I:%M %p') if alert.created_at else 'Not available' }}
+                        </div>
+
+                        <div>
+                            <strong>Latitude:</strong>
+                            {{ alert.latitude }}
+                        </div>
+
+                        <div>
+                            <strong>Longitude:</strong>
+                            {{ alert.longitude }}
+                        </div>
+
+                    </div>
+
+                    <a class="history-map"
+                       href="https://www.google.com/maps?q={{ alert.latitude }},{{ alert.longitude }}"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        View Location on Google Maps ↗
+                    </a>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty-history">
+                <h3>No SOS alerts yet</h3>
+                <p>Your emergency history will appear here.</p>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</body>
+</html>

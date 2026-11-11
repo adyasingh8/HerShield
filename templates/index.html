@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>HerShield</title>
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<header>
+    <h2>HerShield</h2>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="#features">Features</a>
+        <a href="{{ url_for('login') }}">Login</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div>
+        <h1>Your Safety, Our Priority.</h1>
+
+        <p>
+            Empowering women with smart technology,
+            instant assistance and safety support.
+        </p>
+
+        <a href="{{ url_for('register') }}" class="btn">
+            Get Started
+        </a>
+    </div>
+</section>
+
+<section class="features" id="features">
+    <h2>Your Safety Matters</h2>
+    <p>Smart safety solutions designed to protect and empower women.</p>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,538 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Safe Journey | HerShield</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">      
+
+    <style>
+        .journey-page {
+            min-height: 100vh;
+            padding: 40px 20px;
+            background: #f8f5fc;
+            font-family: Arial, sans-serif;
+        }
+
+        .journey-container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .journey-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .journey-header h1 {
+            color: #34234f;
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .journey-header p {
+            color: #77718a;
+            margin-top: 8px;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #8052a6;
+            font-weight: bold;
+        }
+
+        .journey-card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 5px 25px rgba(80, 50, 100, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .journey-card h2 {
+            color: #34234f;
+            margin-top: 0;
+        }
+
+        .journey-card label {
+            display: block;
+            margin: 18px 0 8px;
+            color: #514567;
+            font-weight: 600;
+        }
+
+        .journey-card input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px;
+            border: 1px solid #ded5e9;
+            border-radius: 9px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .journey-card input:focus {
+            border-color: #9667bd;
+        }
+
+        .journey-button {
+            margin-top: 22px;
+            padding: 13px 25px;
+            background: #8052a6;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .journey-button:hover {
+            background: #68418c;
+        }
+
+        .journey-map {
+            height: 350px;
+            width: 100%;
+            background: #f0eaf7;
+            border: 1px dashed #c9b6dc;
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #806b95;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .journey-page {
+                padding: 25px 15px;
+            }
+
+            .journey-card {
+                padding: 20px;
+            }
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+<div class="journey-page">
+
+    <div class="journey-container">
+
+        <div class="journey-header">
+            <div>
+                <h1>🚶‍♀️ Safe Journey</h1>
+                <p>Plan your journey and stay connected during travel.</p>
+            </div>
+
+            <a href="{{ url_for('dashboard') }}" class="back-link">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+        <div class="journey-card">
+
+            <h2>Plan Your Journey</h2>
+
+            <p>Enter your travel details to get started.</p>
+
+            <label for="startLocation">Starting Point</label>
+            <input type="text"
+                   id="startLocation"
+                   placeholder="Enter your starting location">
+
+            <label for="destination">Destination</label>
+            <input type="text"
+                   id="destination"
+                   placeholder="Enter your destination">
+
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+
+    <button type="button"
+            class="journey-button"
+            id="startJourneyButton">
+        Start Journey
+    </button>
+
+    <button type="button"
+            class="journey-button"
+            id="endJourneyButton"
+            hidden
+            style="background-color: #b94b65;">
+        End Journey
+    </button>
+
+</div>
+
+<p id="journeyMessage" role="status">
+    Your journey has not started yet.
+</p>
+
+        </div>
+
+        <div class="journey-card">
+
+            <h2>📍 Your Journey Map</h2>
+
+            <div id="journeyMap" class="journey-map"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    const journeyMap = L.map("journeyMap").setView(
+        [25.5941, 85.1376], 13
+    );
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            attribution: "&copy; OpenStreetMap contributors"
+        }
+    ).addTo(journeyMap);
+
+    let startMarker = null;
+    let destinationMarker = null;
+    let routeLine = null;
+    let journeyTrackingId = null;
+    let currentJourneyMarker = null;
+    let activeJourneyId = null;
+
+document.getElementById("startJourneyButton")
+    .addEventListener("click", async function () {
+
+        const start = document.getElementById("startLocation").value.trim();
+        const destination = document.getElementById("destination").value.trim();
+        const message = document.getElementById("journeyMessage");
+
+        if (!start || !destination) {
+            message.textContent =
+                "Please enter both starting point and destination.";
+            return;
+        }
+
+        message.textContent = "Finding locations and calculating route...";
+
+        try {
+
+            // Find starting location
+            const startResponse = await fetch(
+                "https://photon.komoot.io/api/?q=" +
+                encodeURIComponent(start) + "&limit=1"
+            );
+
+            const startData = await startResponse.json();
+
+            if (!startData.features.length) {
+                message.textContent = "Starting location not found.";
+                return;
+            }
+
+            const startCoords =
+                startData.features[0].geometry.coordinates;
+
+            // Find destination
+            const destinationResponse = await fetch(
+                "https://photon.komoot.io/api/?q=" +
+                encodeURIComponent(destination) + "&limit=1"
+            );
+
+            const destinationData = await destinationResponse.json();
+
+            if (!destinationData.features.length) {
+                message.textContent = "Destination not found.";
+                return;
+            }
+
+            const destinationCoords =
+                destinationData.features[0].geometry.coordinates;
+
+            // Remove previous markers and route
+            if (startMarker) journeyMap.removeLayer(startMarker);
+            if (destinationMarker) journeyMap.removeLayer(destinationMarker);
+            if (routeLine) journeyMap.removeLayer(routeLine);
+
+            // Add markers
+            startMarker = L.marker([
+                startCoords[1], startCoords[0]
+            ]).addTo(journeyMap).bindPopup("Starting Point");
+
+            destinationMarker = L.marker([
+                destinationCoords[1], destinationCoords[0]
+            ]).addTo(journeyMap).bindPopup("Destination");
+
+            // Calculate driving route
+            const routeResponse = await fetch(
+                "https://router.project-osrm.org/route/v1/driving/" +
+                startCoords[0] + "," + startCoords[1] + ";" +
+                destinationCoords[0] + "," + destinationCoords[1] +
+                "?overview=full&geometries=geojson"
+            );
+
+            const routeData = await routeResponse.json();
+
+            if (!routeData.routes || !routeData.routes.length) {
+                message.textContent = "No driving route found.";
+                return;
+            }
+
+            // Draw route on map
+            routeLine = L.geoJSON(
+                routeData.routes[0].geometry,
+                {
+                    style: {
+                        color: "#8052a6",
+                        weight: 5
+                    }
+                }
+            ).addTo(journeyMap);
+
+            // Zoom to show complete route
+            journeyMap.fitBounds(routeLine.getBounds(), {
+                padding: [30, 30]
+            });
+
+            const distance =
+                (routeData.routes[0].distance / 1000).toFixed(2);
+
+            const duration =
+                Math.round(routeData.routes[0].duration / 60);
+
+            message.textContent = "Route found! Starting your journey...";
+
+try {
+
+    const journeyResponse = await fetch("/api/journeys/start", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            start_location: start,
+            destination: destination
+        })
+    });
+
+    const journeyResult = await journeyResponse.json();
+
+    if (!journeyResponse.ok || !journeyResult.success) {
+        message.textContent =
+            journeyResult.message || "Could not start journey.";
+        return;
+    }
+
+    activeJourneyId = journeyResult.journey_id;
+
+    message.textContent =
+        "Journey started! Emergency contacts notified: " +
+        journeyResult.email_sent;
+
+    startLiveJourneyTracking();
+
+} catch (error) {
+
+    console.error("Journey start error:", error);
+
+    message.textContent =
+        "Unable to start journey. Please try again.";
+}
+
+        } catch (error) {
+
+            console.error("Journey route error:", error);
+
+            message.textContent =
+                "Unable to calculate route. Please try again.";
+        }
+    });
+
+    // Start live journey tracking
+function startLiveJourneyTracking() {
+
+    if (!navigator.geolocation) {
+        document.getElementById("journeyMessage").textContent =
+            "GPS is not supported by this browser.";
+        return;
+    }
+
+    if (journeyTrackingId !== null) {
+        navigator.geolocation.clearWatch(journeyTrackingId);
+    }
+
+    journeyTrackingId = navigator.geolocation.watchPosition(
+
+        function(position) {
+
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            fetch("/api/journeys/location", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        journey_id: activeJourneyId,
+        latitude: latitude,
+        longitude: longitude
+    })
+})
+.then(response => response.json())
+.then(result => {
+    console.log("Journey location saved:", result);
+})
+.catch(error => {
+    console.error("Journey location saving failed:", error);
+});
+
+            // Create or move the current location marker
+            if (currentJourneyMarker) {
+
+                currentJourneyMarker.setLatLng([
+                    latitude,
+                    longitude
+                ]);
+
+            } else {
+
+                currentJourneyMarker = L.marker([
+                    latitude,
+                    longitude
+                ]).addTo(journeyMap);
+
+                currentJourneyMarker.bindPopup(
+                    "Your Current Location"
+                );
+            }
+
+            // Move map to latest GPS position
+            journeyMap.setView(
+                [latitude, longitude],
+                16,
+                { animate: true }
+            );
+
+            document.getElementById("journeyMessage").textContent =
+                "Journey Active! Your live location is being tracked.";
+
+            console.log("Journey GPS:", latitude, longitude);
+        },
+
+        function(error) {
+
+            let message = "Unable to access your GPS location.";
+
+            if (error.code === 1) {
+                message = "Location permission denied. Please allow location access.";
+            } else if (error.code === 2) {
+                message = "Your device location is unavailable.";
+            } else if (error.code === 3) {
+                message = "GPS request timed out. Please try again.";
+            }
+
+            document.getElementById("journeyMessage").textContent =
+                message;
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: 30000
+        }
+    );
+
+    document.getElementById("startJourneyButton").hidden = true;
+    document.getElementById("endJourneyButton").hidden = false;
+}
+
+
+// End live journey tracking
+async function endLiveJourneyTracking() {
+
+    console.log("End Journey clicked!");
+
+    // Stop browser GPS tracking
+    if (journeyTrackingId !== null) {
+        navigator.geolocation.clearWatch(journeyTrackingId);
+        journeyTrackingId = null;
+    }
+
+    // End journey in Flask and MySQL
+    if (activeJourneyId !== null) {
+
+        try {
+
+            const response = await fetch("/api/journeys/end", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    journey_id: activeJourneyId
+                })
+            });
+
+            const result = await response.json();
+
+            console.log("End journey response:", result);
+
+            if (!response.ok || !result.success) {
+                document.getElementById("journeyMessage").textContent =
+                    result.message || "Unable to end journey.";
+                return;
+            }
+
+            activeJourneyId = null;
+
+        } catch (error) {
+
+            console.error("End journey error:", error);
+
+            document.getElementById("journeyMessage").textContent =
+                "Server connection failed while ending journey.";
+            return;
+        }
+    }
+
+    document.getElementById("startJourneyButton").hidden = false;
+    document.getElementById("endJourneyButton").hidden = true;
+
+    document.getElementById("journeyMessage").textContent =
+        "Journey ended successfully! Live tracking stopped.";
+
+}
+const endButton = document.getElementById("endJourneyButton");
+
+endButton.onclick = function() {
+    console.log("End button event detected!");
+    endLiveJourneyTracking();
+};
+
+</script>
+
+</body>
+</html>

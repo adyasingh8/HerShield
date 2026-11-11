@@ -1,0 +1,749 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #faf7ff;
+    color: #302343;
+}
+
+header {
+    padding: 25px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+}
+
+header h2 {
+    color: #8146c8;
+    font-size: 28px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #49375e;
+    margin-left: 25px;
+}
+
+.hero {
+    min-height: 550px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #eee2ff, #fff0f5);
+}
+
+.hero h1 {
+    font-size: 52px;
+    margin-bottom: 20px;
+    color: #63369c;
+}
+
+.hero p {
+    font-size: 19px;
+    margin-bottom: 30px;
+}
+
+.btn {
+    background: #854acb;
+    color: white;
+    padding: 15px 35px;
+    border-radius: 30px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn:hover {
+    background: #63369c;
+}
+
+.features {
+    padding: 60px 8%;
+    text-align: center;
+}
+
+.features h2 {
+    margin-bottom: 30px;
+    color: #63369c;
+}
+
+
+/* ===== HER SHIELD AUTHENTICATION PAGES ===== */
+
+.auth-page {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f8f5fc;
+    color: #29233b;
+}
+
+.auth-shell {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+}
+
+/* Welcome panel */
+
+.auth-welcome {
+    background: linear-gradient(145deg, #7554a5, #a77cc3);
+    color: white;
+    padding: 55px 9%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.brand {
+    font-size: 30px;
+    font-weight: 750;
+    letter-spacing: 1px;
+}
+
+.welcome-content {
+    max-width: 430px;
+}
+
+.welcome-content h1 {
+    font-size: clamp(38px, 5vw, 58px);
+    line-height: 1.15;
+    margin-bottom: 22px;
+}
+
+.welcome-content p {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #f4eafa;
+}
+
+.welcome-footer {
+    font-size: 14px;
+    color: #f4eafa;
+}
+
+/* Form area */
+
+.auth-form-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 45px 25px;
+}
+
+.auth-card {
+    background: white;
+    width: 100%;
+    max-width: 590px;
+    padding: 42px;
+    border-radius: 22px;
+    box-shadow: 0 12px 45px rgba(75, 47, 100, 0.10);
+}
+
+.login-card {
+    max-width: 460px;
+}
+
+.auth-card h2 {
+    font-size: 30px;
+    margin: 0 0 8px;
+    color: #38274d;
+}
+
+.auth-subtitle {
+    color: #888093;
+    margin-bottom: 30px;
+}
+
+/* Form fields */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 21px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 9px;
+    color: #493b5c;
+}
+
+.form-group input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 15px;
+    border: 1px solid #e4dce9;
+    border-radius: 10px;
+    background: #fcfaff;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #9068b6;
+    box-shadow: 0 0 0 3px rgba(144, 104, 182, 0.12);
+}
+
+/* Buttons */
+
+.auth-button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 10px;
+    background: #805ba8;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.auth-button:hover {
+    background: #67448f;
+    transform: translateY(-1px);
+}
+
+/* Links and messages */
+
+.auth-switch {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 14px;
+    color: #777080;
+}
+
+.auth-switch a {
+    color: #805ba8;
+    font-weight: 650;
+    text-decoration: none;
+}
+
+.auth-switch a:hover {
+    text-decoration: underline;
+}
+
+.back-home {
+    display: block;
+    text-align: center;
+    margin-top: 22px;
+    color: #805ba8;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.auth-message {
+    background: #f8eafa;
+    color: #653c78;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 18px;
+    font-size: 14px;
+}
+
+/* Mobile responsive */
+
+@media (max-width: 850px) {
+    .auth-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-welcome {
+        min-height: 220px;
+        padding: 28px;
+    }
+
+    .welcome-content h1 {
+        font-size: 36px;
+    }
+
+    .welcome-footer {
+        margin-top: 20px;
+    }
+
+    .auth-card {
+        padding: 28px;
+    }
+}
+
+@media (max-width: 520px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .auth-form-area {
+        padding: 25px 15px;
+    }
+
+    .auth-card {
+        padding: 23px;
+    }
+}
+
+
+/* ==================================
+   HER SHIELD DASHBOARD
+================================== */
+
+.dashboard-page {
+    margin: 0;
+    background: #f8f5fc;
+    color: #30253f;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Navigation */
+
+.dashboard-navbar {
+    min-height: 75px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 7%;
+    box-shadow: 0 3px 15px rgba(70, 40, 90, 0.06);
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.dashboard-brand {
+    font-size: 27px;
+    font-weight: 800;
+    color: #7953a2;
+}
+
+.dashboard-brand span {
+    color: #c17cae;
+}
+
+.dashboard-nav-links {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+.dashboard-nav-links a {
+    text-decoration: none;
+    color: #63576e;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.dashboard-nav-links a:hover {
+    color: #895eae;
+}
+
+.logout-button {
+    background: #805ba8;
+    color: white;
+    text-decoration: none;
+    padding: 11px 22px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Main container */
+
+.dashboard-container {
+    width: 86%;
+    max-width: 1250px;
+    margin: 35px auto;
+}
+
+/* Welcome section */
+
+.dashboard-welcome {
+    background: linear-gradient(120deg, #7957a5, #b18ac7);
+    border-radius: 20px;
+    padding: 38px 45px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 170px;
+}
+
+.welcome-tag {
+    font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    color: #f0e2fa;
+}
+
+.dashboard-welcome h1 {
+    font-size: 34px;
+    margin: 12px 0;
+}
+
+.dashboard-welcome p {
+    max-width: 620px;
+    line-height: 1.7;
+    color: #f7effc;
+}
+
+.welcome-icon {
+    font-size: 85px;
+    padding: 20px;
+}
+
+/* SOS section */
+
+.sos-section {
+    margin-top: 28px;
+    padding: 30px 38px;
+    background: #fff0f3;
+    border: 1px solid #f5d9e2;
+    border-radius: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.sos-label {
+    font-size: 12px;
+    color: #bd6682;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.sos-content h2 {
+    font-size: 25px;
+    margin: 10px 0;
+    color: #53344c;
+}
+
+.sos-content p {
+    color: #806d7c;
+    line-height: 1.6;
+}
+
+.sos-action {
+    text-align: center;
+}
+
+.sos-button {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 7px solid #f7d3df;
+    background: #c64f70;
+    color: white;
+    font-size: 28px;
+    font-weight: 800;
+    cursor: not-allowed;
+    opacity: 0.75;
+}
+
+.sos-action p {
+    font-size: 11px;
+    color: #94677b;
+}
+
+/* Safety tools */
+
+.dashboard-section {
+    margin-top: 42px;
+}
+
+.section-heading h2 {
+    font-size: 25px;
+    margin-bottom: 7px;
+}
+
+.section-heading p {
+    color: #887d91;
+    margin-bottom: 24px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.dashboard-card {
+    background: white;
+    border: 1px solid #eee7f3;
+    border-radius: 16px;
+    padding: 25px 21px;
+    min-height: 190px;
+    box-shadow: 0 5px 20px rgba(70, 40, 90, 0.04);
+    transition: 0.25s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(70, 40, 90, 0.10);
+}
+
+.card-icon {
+    width: 53px;
+    height: 53px;
+    background: #f2eafb;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+}
+
+.dashboard-card h3 {
+    font-size: 17px;
+    margin: 18px 0 9px;
+}
+
+.dashboard-card p {
+    color: #82788b;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.feature-status {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 11px;
+    background: #f2eafb;
+    color: #7957a5;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* Safety tips */
+
+.tips-section {
+    margin-top: 40px;
+    background: #eee7f7;
+    border-radius: 18px;
+    padding: 30px 38px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tips-label {
+    color: #7957a5;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.tips-section h2 {
+    font-size: 23px;
+    margin: 10px 0;
+}
+
+.tips-section p {
+    color: #766a83;
+    line-height: 1.7;
+    max-width: 700px;
+}
+
+.tips-icon {
+    font-size: 60px;
+}
+
+/* Footer */
+
+.dashboard-footer {
+    text-align: center;
+    padding: 35px 10px 15px;
+    color: #8b8094;
+}
+
+.dashboard-footer h3 {
+    color: #7957a5;
+    font-size: 23px;
+    margin-bottom: 5px;
+}
+
+.dashboard-footer p {
+    font-size: 14px;
+}
+
+.dashboard-footer span {
+    font-size: 12px;
+}
+
+/* Responsive layout */
+
+@media (max-width: 950px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard-navbar {
+        padding: 20px 5%;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-container {
+        width: 92%;
+    }
+
+    .dashboard-welcome {
+        padding: 25px;
+    }
+
+    .dashboard-welcome h1 {
+        font-size: 26px;
+    }
+
+    .welcome-icon {
+        display: none;
+    }
+
+    .sos-section {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-nav-links {
+        gap: 13px;
+    }
+
+    .tips-icon {
+        display: none;
+    }
+}
+
+/* SOS Location Map */
+
+.location-section {
+    margin-top: 35px;
+    padding: 30px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(70, 40, 90, 0.05);
+}
+
+.location-section h2 {
+    color: #38274d;
+    margin-bottom: 12px;
+}
+
+.location-section p {
+    color: #82788b;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+#map {
+    width: 100%;
+    height: 350px;
+    border-radius: 14px;
+    z-index: 1;
+}
+
+.sos-button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+
+.setup-link {
+    display: inline-block;
+    padding: 9px 17px;
+    margin-top: 12px;
+    background: #f1e6fa;
+    color: #8655a5;
+    text-decoration: none;
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.setup-link:hover {
+    background: #8655a5;
+    color: white;
+    transform: translateY(-2px);
+}
+
+a.feature-card {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+a.feature-card h3,
+a.feature-card p,
+a.feature-card span {
+    color: inherit;
+    text-decoration: none;
+}
+.feature-card .feature-icon {
+    width: 54px;
+    height: 54px;
+    background-color: #f3eafa;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+#googleMapsLink {
+    text-decoration: none;
+    color: #8052a6;
+}
+
+#googleMapsLink:hover {
+    text-decoration: none;
+    color: #633b8a;
+}
+
+.stop-sos-button {
+    background-color: #39865a;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 24px;
+    margin-top: 15px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.stop-sos-button:hover {
+    background-color: #286b45;
+}
+
+.stop-sos-button[hidden] {
+    display: none;
+}
