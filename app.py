@@ -15,6 +15,7 @@ import secrets
 
 load_dotenv(Path(__file__).resolve().parent / ".env", override=True)
 
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
@@ -24,12 +25,31 @@ database_url = URL.create(
     username=os.getenv("DB_USER"),
     password=os.getenv("DB_PASSWORD"),
     host=os.getenv("DB_HOST"),
-    port=3306,
+    port=int(os.getenv("DB_PORT", "3306")),
     database=os.getenv("DB_NAME")
 )
 
 app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 
+# Configure SSL only when a certificate path is provided
+ssl_ca = os.getenv("DB_SSL_CA")
+connect_args = {}
+
+if ssl_ca:
+    ca_path = (
+        ssl_ca if os.path.isabs(ssl_ca)
+        else os.path.join(os.path.dirname(os.path.abspath(__file__)), ssl_ca)
+    )
+
+    connect_args = {
+        "ssl": {
+            "ca": ca_path
+        }
+    }
+
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "connect_args": connect_args
+}
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
